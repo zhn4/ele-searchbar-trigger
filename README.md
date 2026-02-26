@@ -1,6 +1,8 @@
 # Trigger By Search Bar
 
-A utility function for triggering actions based on search bar input.
+可能是折叠/展开搜索栏的最便捷的方法
+
+maybe the most convenient way to toggle collapse/expand search bar
 
 ## Installation
 
