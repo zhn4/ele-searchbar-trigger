@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ele-searchbar-trigger 示例</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.15.14/lib/theme-chalk/index.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 32px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: #f5f7fa;
+      }
+      .card {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 20px 24px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 1px 4px rgb(0 0 0 / 8%);
+      }
+      .hint {
+        margin-bottom: 16px;
+        color: #606266;
+        font-size: 13px;
+        line-height: 1.7;
+      }
+      .result {
+        margin-top: 16px;
+        padding: 12px;
+        background: #f5f7fa;
+        border-radius: 4px;
+        font-family: Consolas, Monaco, monospace;
+        font-size: 12px;
+        white-space: pre-wrap;
+        color: #303133;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" class="card">
+      <p class="hint">
+        点击「收起」后，<code>collapsedFields</code> 里的表单项会被隐藏；再点「展开」，它们会恢复到隐藏前的
+        <code>display</code>。下方展示函数返回值。
+      </p>
+
+      <el-form ref="formRef" :inline="true" :model="query" label-width="80px">
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="query.name" placeholder="常用字段，永远显示" style="width: 160px" />
+        </el-form-item>
+        <el-form-item label="状态" prop="status">
+          <el-select v-model="query.status" placeholder="收起时隐藏" style="width: 160px">
+            <el-option label="启用" value="enabled" />
+            <el-option label="停用" value="disabled" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="创建时间" prop="createdAt">
+          <el-date-picker v-model="query.createdAt" type="date" placeholder="收起时隐藏" />
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="query.remark" placeholder="用来演示 missing" style="width: 160px" />
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary">查询</el-button>
+          <el-button @click="toggleSearchBar">{{ isSmallSearchBar ? '展开' : '收起' }}</el-button>
+        </el-form-item>
+      </el-form>
+
+      <div class="result">{{ resultText }}</div>
+    </div>
+
+    <script src="https://unpkg.com/vue@2.7.16/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui@2.15.14/lib/index.js"></script>
+    <!-- 先执行 npm run build 生成 dist/ -->
+    <script src="../dist/index.umd.js"></script>
+    <script>
+      new Vue({
+        el: '#app',
+        data() {
+          return {
+            isSmallSearchBar: false,
+            query: { name: '', status: '', createdAt: '', remark: '' },
+            // 'notExist' 故意写一个不存在的 prop，用来看 missing 的返回
+            collapsedFields: ['status', 'createdAt', 'notExist'],
+            resultText: '尚未调用 triggerBySearchBar()',
+          }
+        },
+        methods: {
+          toggleSearchBar() {
+            this.isSmallSearchBar = !this.isSmallSearchBar
+
+            this.$nextTick(() => {
+              const result = EleSearchbarTrigger(this, 'formRef', this.collapsedFields)
+              this.resultText = JSON.stringify(result, null, 2)
+            })
+          },
+        },
+      })
+    </script>
+  </body>
+</html>
